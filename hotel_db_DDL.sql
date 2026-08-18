@@ -106,7 +106,7 @@ CREATE TABLE GUEST (
     Guest_ID        VARCHAR(20) NOT NULL,
     F_name            VARCHAR(15) NOT NULL,
     L_name            VARCHAR(15) NOT NULL,
-    Room_no            SMALLINT NOT NULL,
+    Room_no            SMALLINT,
     Phone            BIGINT NOT NULL,
     Credit_card        VARCHAR(16) NOT NULL,
     Address            VARCHAR(200) NOT NULL,
