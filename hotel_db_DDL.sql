@@ -43,7 +43,11 @@ CREATE TABLE EMPLOYEE (
   Employee_ID        VARCHAR(9) NOT NULL,
   EF_Name       VARCHAR(15) NOT NULL,
   EL_Name        VARCHAR(15) NOT NULL,
-  Shift        DATETIME NOT NULL,
+  Hire_Date         DATE NOT NULL,
+  Salary            DECIMAL(10,2) NOT NULL,
+  Weekly_Work_Time  SMALLINT NOT NULL,
+  Shift_In          TIME NOT NULL,
+  Shift_Out         TIME NOT NULL,
   Dno        VARCHAR(20) NOT NULL,
   CONSTRAINT pk_employee PRIMARY KEY(Employee_ID),
   CONSTRAINT fk_employee_department FOREIGN KEY (Dno) references DEPARTMENT(D_no)
@@ -139,13 +143,9 @@ CREATE TABLE FEEDBACK (
 -- Create ROOM table
 DROP TABLE IF EXISTS ROOM;
 CREATE TABLE ROOM (
-  Daily_price        DOUBLE NOT NULL,
   Room_no       SMALLINT NOT NULL,
-  Start_date       DATE NOT NULL,
-  End_date		DATE NOT NULL,
-  Guest_ID        VARCHAR(20) NOT NULL,
-  CONSTRAINT pk_Room PRIMARY KEY (Room_no),
-  CONSTRAINT fk_G_id FOREIGN KEY (Guest_ID) references GUEST(Guest_ID)
+  Daily_price   DOUBLE NOT NULL,
+  CONSTRAINT pk_Room PRIMARY KEY (Room_no)
 );
 
 -- Create CAR table
@@ -241,24 +241,43 @@ CREATE TABLE TAKE_ACTION (
 	CONSTRAINT fk_take_action_Fid FOREIGN KEY (F_id) references FEEDBACK(Feedback_ID)
 );
 
+-- Create BOOK table
+DROP TABLE IF EXISTS BOOK;
+CREATE TABLE BOOK (
+  Booking_ID        VARCHAR(20) NOT NULL,
+  G_no              VARCHAR(20) NOT NULL,
+  Room_no           SMALLINT NOT NULL,
+  Plate_no          VARCHAR(10) NULL,
+  Start_date        DATE NOT NULL,
+  End_date          DATE NOT NULL,
+  Check_in_time     DATETIME NULL,
+  Check_out_time    DATETIME NULL,
+  Booking_Status    ENUM('Reserved','CheckedIn','CheckedOut','Cancelled') NOT NULL DEFAULT 'Reserved',
+  CONSTRAINT pk_book PRIMARY KEY (Booking_ID),
+  CONSTRAINT fk_book_room FOREIGN KEY (Room_no) references ROOM(Room_no),
+  CONSTRAINT fk_book_guest FOREIGN KEY (G_no) references GUEST(Guest_ID),
+  CONSTRAINT fk_book_car FOREIGN KEY (Plate_no) references CAR(License_Plate)
+);
+
 -- Create INVENTORY table
 DROP TABLE IF EXISTS INVENTORY;
 CREATE TABLE INVENTORY (
-    Item_id        VARCHAR(12) NOT NULL,
-    Quantity        VARCHAR(20) NOT NULL,
-    Price    ENUM("text", "Cash", "Credit", "Debit"),
-    Guest_ID        VARCHAR(20) NOT NULL,
-    CONSTRAINT pr_inventory PRIMARY KEY (Item_id),
-    CONSTRAINT fk_G_id_inventory FOREIGN KEY (Guest_ID) references GUEST(Guest_ID)
+    Purchase_ID     VARCHAR(12) NOT NULL,
+    Booking_ID      VARCHAR(20) NOT NULL,
+    Quantity        INT NOT NULL,
+    Price           DECIMAL(8,2) NOT NULL,
+    Purchase_date   DATETIME NOT NULL,
+    CONSTRAINT pk_inventory PRIMARY KEY (Purchase_ID),
+    CONSTRAINT fk_inventory_booking FOREIGN KEY (Booking_ID) references BOOK(Booking_ID)
 );
 
 -- Create MAKE_PAYMENT table
 DROP TABLE IF EXISTS MAKE_PAYMENT;
-CREATE TABLE  MAKE_PAYMENT(
-	I_id	VARCHAR(20)	NOT NULL,
-	Pay_id	 VARCHAR(20)	NOT NULL,
-CONSTRAINT fk_make_payment_inventory FOREIGN KEY (I_id) references INVENTORY(Item_id),
-CONSTRAINT fk_make_payment_payment FOREIGN KEY(Pay_id) references PAYMENT(Payment_ID)
+CREATE TABLE MAKE_PAYMENT(
+  I_id     VARCHAR(20) NOT NULL,
+  Pay_id   VARCHAR(20) NOT NULL,
+  CONSTRAINT fk_make_payment_inventory FOREIGN KEY (I_id) references INVENTORY(Purchase_ID),
+  CONSTRAINT fk_make_payment_payment FOREIGN KEY (Pay_id) references PAYMENT(Payment_ID)
 );
 
 -- Create CAR_PALTE table
@@ -269,14 +288,3 @@ CREATE TABLE CAR_PLATE (
   CONSTRAINT pk_carplate PRIMARY KEY (Plate_no),
   CONSTRAINT fk_carplate_guest FOREIGN KEY (G_no) references GUEST(Guest_ID)
 );
-
--- Create BOOK table
-DROP TABLE IF EXISTS BOOK;
-CREATE TABLE BOOK (
-  G_no        VARCHAR(20) NOT NULL,
-  Room_no	SMALLINT NOT NULL,
-  Plate_no	VARCHAR(10) NOT NULL,
-  CONSTRAINT pk_book PRIMARY KEY (Plate_no),
-  CONSTRAINT fk_book_room FOREIGN KEY (Room_no) references ROOM(Room_no),
-  CONSTRAINT fk_book_guest FOREIGN KEY (G_no) references Guest(Guest_ID)
-  );
