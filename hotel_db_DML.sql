@@ -282,7 +282,9 @@ INSERT INTO PAYMENT(Payment_ID, Payer_ID, Payment_method, Payment_date, Payment_
 INSERT INTO FEEDBACK (Feedback_ID, Feed_Comment, Guest_ID ) VALUES
 ('111', 'The hotel was ok but it could be better. I wish there were more employees.','57890123' ),
 ('112', 'I loved my stay at the hotel. All of the services were so nice and all of the employees were very courteous. Will definitely come again', '54678901' ),
-('113', 'The hotel needs more towels. Other than that I enjoyed my stay here at the hotel, and my masseuse did a good job with their service ','37890123');
+('113', 'The hotel needs more towels. Other than that I enjoyed my stay here at the hotel, and my masseuse did a good job with their service ','37890123'),
+('114', 'I love this hotel and have stayed multiple times, but I noticed the breakfast variety was a bit limited compared to my previous visit.','23456789');
+
 
 INSERT INTO CAR ( Guest_ID, Employee_ID, Model, Parking_ID, Color, License_Plate) value
 ('38901234', '82319' , 'Honda Odessy', '1', 'Black','YBG5626'),
